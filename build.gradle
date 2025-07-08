@@ -1,0 +1,62 @@
+// 插件 classpath 配置
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:3.5.3'
+    }
+}
+
+plugins {
+    id 'java'
+}
+allprojects {
+    group = 'io.e2x.tigor'
+    version = '0.0.1-SNAPSHOT'
+    repositories {
+        mavenCentral()
+    }
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
+}
+ext {
+    spring_boot_version = '3.5.3'
+    spring_cloud_version = '2025.0.0'
+    lombok_version = '1.18.24'
+}
+
+subprojects {
+//    version = rootProject.version
+    apply plugin: "java"
+//    apply plugin: "org.springframework.boot"
+//    apply plugin: "io.spring.dependency-management"
+
+//    javadoc {
+//        options.encoding = defaultEncoding
+//        options.addBooleanOption('Xdoclint:none', true)
+//    }
+//    compileJava.dependsOn(processResources)
+
+//    dependencyManagement {
+//        imports {
+//            mavenBom "org.springframework.boot:spring-boot-dependencies:${spring_boot_version}"
+//            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${spring_cloud_version}"
+//        }
+//        dependencies {
+//            dependency 'org.projectlombok:lombok:${lombok_version}'
+//        }
+//    }
+
+    if (name != 'tigor-frameworks') {
+        apply plugin: 'org.springframework.boot'
+        apply plugin: 'io.spring.dependency-management'
+    }
+    def defaultEncoding = 'UTF-8'
+    tasks.withType(AbstractCompile).each { it.options.encoding = defaultEncoding }
+}
+
+wrapper {
+    gradleVersion = "8.14.2"
+}

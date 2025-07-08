@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+//    id 'org.springframework.boot' version '3.5.3'
+//    id 'io.spring.dependency-management' version '1.1.7'
+}
+description = "Tigor Eureka Service"
+repositories {
+    mavenCentral()
+}
+dependencies {
+    implementation('org.springframework.cloud:spring-cloud-starter-netflix-eureka-server:4.3.0') {
+        // 排除存在漏洞的依赖
+        exclude group: 'com.thoughtworks.xstream', module: 'xstream'
+        exclude group: 'software.amazon.ion', module: 'ion-java'
+    }
+
+    // 使用已修复版本替代
+    implementation 'com.thoughtworks.xstream:xstream:1.4.21' // 替换为无漏洞版本
+    implementation 'com.amazon.ion:ion-java:1.11.10'     // 替换为修复后的版本
+
+}

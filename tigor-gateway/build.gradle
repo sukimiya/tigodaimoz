@@ -1,0 +1,13 @@
+plugins {
+	id 'java'
+}
+description = 'Tigor Gateway Server'
+repositories {
+	mavenCentral()
+}
+dependencies {
+	implementation project(':tigor-frameworks')
+	implementation 'org.springframework.boot:spring-boot-starter-graphql:3.5.3'
+	implementation 'org.springframework.cloud:spring-cloud-starter-gateway-server-webflux:4.3.0'
+	implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer:4.3.0'
+}

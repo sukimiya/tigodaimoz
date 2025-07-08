@@ -1,0 +1,2 @@
+rootProject.name = 'tigodaimoz'
+include 'tigor-frameworks', 'tigor-gateway', 'tigor-eureka'

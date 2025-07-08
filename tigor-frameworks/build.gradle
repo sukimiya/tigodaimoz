@@ -1,0 +1,47 @@
+plugins {
+    id 'java-library'
+}
+description = "Tigor Frameworks"
+
+repositories {
+    mavenCentral()
+}
+configurations.all {
+    resolutionStrategy {
+        // 升级 commons-codec 到 1.15+
+        force 'commons-codec:commons-codec:1.15'
+
+        // 升级 httpclient 到 4.5.13+ 或更高
+        force 'org.apache.httpcomponents:httpclient:4.5.13'
+
+        // 升级 xstream 到 1.4.21+
+        force 'com.thoughtworks.xstream:xstream:1.4.21'
+    }
+}
+dependencies {
+    implementation "org.projectlombok:lombok:1.18.38"
+    implementation 'org.springframework.boot:spring-boot-starter:3.5.3'
+    implementation('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.3.0') {
+        exclude group: 'com.graphql-java', module: 'graphql-java'
+        // 可选：进一步排除其他潜在冲突模块
+        exclude group: 'com.thoughtworks.xstream', module: 'xstream'
+        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+        exclude group: 'commons-codec', module: 'commons-codec'
+    }
+    implementation 'com.graphql-java:graphql-java:24.1'
+    implementation('com.netflix.graphql.dgs.codegen:graphql-dgs-codegen-gradle:7.0.3') {
+        exclude group: 'com.graphql-java', module: 'graphql-java'
+        exclude group: 'com.graphql-java', module: 'java-dataloader'
+    }
+    implementation 'org.springframework.boot:spring-boot-starter-webflux:3.5.3'
+    implementation 'org.springframework.boot:spring-boot-starter-graphql:3.5.3'
+    implementation 'org.springframework.boot:spring-boot-starter-security:3.5.3'
+    testImplementation('org.springframework.graphql:spring-graphql-test:1.4.1') {
+        exclude group: 'com.graphql-java', module: 'graphql-java'
+        exclude group: 'com.graphql-java', module: 'java-dataloader'
+    }
+    implementation 'com.graphql-java:java-dataloader:3.3.0'
+    testImplementation 'io.projectreactor:reactor-test:3.7.7'
+    testImplementation 'org.springframework.security:spring-security-test:6.5.1'
+}
+

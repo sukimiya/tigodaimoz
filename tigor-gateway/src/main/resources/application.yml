@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: tigor-gateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: dgs-service
+              uri: http://dgs-service
+              predicates:
+                - Path=/graphql/**
