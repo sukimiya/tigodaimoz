@@ -2,9 +2,6 @@ plugins {
 	id 'java'
 }
 description = 'Tigor Gateway Server'
-repositories {
-	mavenCentral()
-}
 dependencies {
 	implementation project(':tigor-frameworks')
 	implementation 'org.springframework.boot:spring-boot-starter-graphql:3.5.3'

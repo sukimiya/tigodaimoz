@@ -41,6 +41,9 @@ dependencies {
         exclude group: 'com.graphql-java', module: 'java-dataloader'
     }
     implementation 'com.graphql-java:java-dataloader:3.3.0'
+
+    implementation 'org.springframework.cloud:spring-cloud-gateway-server:4.3.0'
+
     testImplementation 'io.projectreactor:reactor-test:3.7.7'
     testImplementation 'org.springframework.security:spring-security-test:6.5.1'
 }

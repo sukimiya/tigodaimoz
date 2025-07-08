@@ -1,3 +1,4 @@
+
 spring:
   application:
     name: tigor-gateway
@@ -10,3 +11,5 @@ spring:
               uri: http://dgs-service
               predicates:
                 - Path=/graphql/**
+server:
+  port: 8008

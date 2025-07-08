@@ -26,7 +26,6 @@ public class GraphQLGatewayConfig {
 
         private final RouteLocator routeLocator;
         private final GraphQLRouteConfig config;
-
         public GraphQLVersionRoutingFilter(RouteLocator routeLocator, GraphQLRouteConfig config) {
             super(GraphQLRouteConfig.class);
             this.routeLocator = routeLocator;
@@ -47,9 +46,6 @@ public class GraphQLGatewayConfig {
                     .filter(Objects::nonNull)
                     .findFirst()
                     .orElse(module) + (version != null ? version : "");
-            config.setVersion(version);
-            config.setModule(module);
-            config.setRouteId(moduleId);
             return routeLocator.getRoutes()
                     .filter(r -> r.getId().equals(moduleId))
                     .next()
