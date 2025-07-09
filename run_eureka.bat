@@ -1,0 +1,1 @@
+java -jar tigor-eureka/build/libs/tigor-eureka-0.0.1-SNAPSHOT.jar

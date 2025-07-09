@@ -1,5 +1,6 @@
 plugins {
     id 'java-library'
+    id 'io.freefair.lombok'  version '8.14'
 }
 description = "Tigor Frameworks"
 
@@ -40,9 +41,12 @@ dependencies {
         exclude group: 'com.graphql-java', module: 'graphql-java'
         exclude group: 'com.graphql-java', module: 'java-dataloader'
     }
+    // fix graphql
     implementation 'com.graphql-java:java-dataloader:3.3.0'
-
+    // gateway supports
     implementation 'org.springframework.cloud:spring-cloud-gateway-server:4.3.0'
+    // debug
+    implementation 'org.springframework.boot:spring-boot-starter-actuator:3.5.3'
 
     testImplementation 'io.projectreactor:reactor-test:3.7.7'
     testImplementation 'org.springframework.security:spring-security-test:6.5.1'

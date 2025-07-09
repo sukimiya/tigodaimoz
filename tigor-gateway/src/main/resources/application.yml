@@ -2,14 +2,26 @@
 spring:
   application:
     name: tigor-gateway
-  cloud:
-    gateway:
-      server:
-        webflux:
-          routes:
-            - id: dgs-service
-              uri: http://dgs-service
-              predicates:
-                - Path=/graphql/**
+#  cloud:
+#    gateway:
+#      server:
+#        webflux:
+#          routes:
+#            - id: dgs-service
+#              uri: http://dgs-service
+#              predicates:
+#                - Path=/graphql/**
+  datasource:
+    url: jdbc:mariadb://mariadb:3306/tigor?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true&rewriteBatchedStatements=true
+    username: tigor
+    password: NmDwA_`q
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    show-sql: true
 server:
   port: 8008
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8087/eureka/
