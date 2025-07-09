@@ -1,5 +1,6 @@
 package io.e2x.tigor.tigorgateway.config;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,9 +20,11 @@ import java.util.List;
 public class DatabaseRouteDefinitionLocator implements RouteDefinitionLocator {
 
     private final RouteDefinitionRepository routeDefinitionRepository;
+    private final ObjectMapper objectMapper;
 
-    public DatabaseRouteDefinitionLocator(RouteDefinitionRepository routeDefinitionRepository) {
+    public DatabaseRouteDefinitionLocator(ObjectMapper objectMapper, RouteDefinitionRepository routeDefinitionRepository) {
         this.routeDefinitionRepository = routeDefinitionRepository;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -44,11 +47,11 @@ public class DatabaseRouteDefinitionLocator implements RouteDefinitionLocator {
 
     // 使用 Jackson ObjectMapper 解析 JSON 字符串为 List<T>
     private <T> List<T> parseJson(String json, Class<T> type) {
+        JavaType javaType = objectMapper.getTypeFactory().constructCollectionType(List.class, type);
         try {
-            JavaType javaType = new ObjectMapper().getTypeFactory().constructCollectionType(List.class, type);
-            return new ObjectMapper().readValue(json, javaType);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to parse JSON", e);
+            return objectMapper.readValue(json, javaType);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
     }
 }
