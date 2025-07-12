@@ -1,5 +1,6 @@
-package io.e2x.tigor.frameworks.common.graph.config;
+package io.e2x.tigor.tigorgateway.config;
 
+import io.e2x.tigor.frameworks.common.pojo.BaseDO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

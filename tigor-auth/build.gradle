@@ -1,0 +1,17 @@
+plugins {
+    id 'java'
+}
+description = 'Tigor Authentication Server'
+dependencies {
+    implementation project(':tigor-frameworks')
+    implementation('org.springframework.boot:spring-boot-starter-security')
+    implementation('org.springframework.boot:spring-boot-starter-webflux')
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.5.3'
+    // https://mvnrepository.com/artifact/com.graphql-java-kickstart/graphql-kickstart-spring-webflux
+    implementation("com.graphql-java-kickstart:graphql-kickstart-spring-webflux:15.1.0")
+    // https://mvnrepository.com/artifact/com.graphql-java-kickstart/graphql-java-tools
+    implementation("com.graphql-java-kickstart:graphql-java-tools:14.0.1")
+    // https://mvnrepository.com/artifact/com.baomidou/mybatis-plus-boot-starter
+    implementation('com.baomidou:mybatis-plus-boot-starter:3.5.12')
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:3.5.2'
+}

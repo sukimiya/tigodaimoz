@@ -7,20 +7,24 @@ description = "Tigor Frameworks"
 repositories {
     mavenCentral()
 }
-configurations.all {
+configurations.configureEach {
     resolutionStrategy {
         // 升级 commons-codec 到 1.15+
         force 'commons-codec:commons-codec:1.15'
 
-        // 升级 httpclient 到 4.5.13+ 或更高
+        // 升级 httpclient 到 4.5.13+
         force 'org.apache.httpcomponents:httpclient:4.5.13'
 
         // 升级 xstream 到 1.4.21+
         force 'com.thoughtworks.xstream:xstream:1.4.21'
+
+        // 强制升级 spring-webmvc 及其他 Spring 组件到安全版本
+        force 'org.springframework:spring-webmvc:6.1.10'
+        force 'org.springframework:spring-core:6.1.10'
+        force 'org.springframework:spring-context:6.1.10'
     }
 }
 dependencies {
-    implementation "org.projectlombok:lombok:1.18.38"
     implementation 'org.springframework.boot:spring-boot-starter:3.5.3'
     implementation('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.3.0') {
         exclude group: 'com.graphql-java', module: 'graphql-java'
@@ -44,9 +48,14 @@ dependencies {
     // fix graphql
     implementation 'com.graphql-java:java-dataloader:3.3.0'
     // gateway supports
-    implementation 'org.springframework.cloud:spring-cloud-gateway-server:4.3.0'
+//    implementation 'org.springframework.cloud:spring-cloud-gateway-server:4.3.0'
     // debug
     implementation 'org.springframework.boot:spring-boot-starter-actuator:3.5.3'
+    // https://mvnrepository.com/artifact/com.fhs-opensource/easy-trans-spring-boot-starter
+    implementation("com.fhs-opensource:easy-trans-spring-boot-starter:3.0.6")
+    implementation("com.fhs-opensource:easy-trans-mybatis-plus-extend:3.0.6")
+    // https://mvnrepository.com/artifact/com.baomidou/mybatis-plus-extension
+    implementation("com.baomidou:mybatis-plus-extension:3.5.12")
 
     testImplementation 'io.projectreactor:reactor-test:3.7.7'
     testImplementation 'org.springframework.security:spring-security-test:6.5.1'

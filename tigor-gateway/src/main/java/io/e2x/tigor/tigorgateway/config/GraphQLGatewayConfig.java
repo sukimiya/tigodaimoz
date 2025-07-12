@@ -1,6 +1,5 @@
 package io.e2x.tigor.tigorgateway.config;
 
-import io.e2x.tigor.frameworks.common.graph.config.GraphQLRouteConfig;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
