@@ -2,13 +2,12 @@ package io.e2x.tigor.frameworks.common.exception;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import io.e2x.tigor.frameworks.common.exception.enums.ServiceErrorCodeRange;
 
-/**
- * 自定义业务异常
- */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public final class ServiceException extends RuntimeException {
+
     /**
      * 业务错误码
      *
@@ -36,6 +35,10 @@ public final class ServiceException extends RuntimeException {
         this.message = message;
     }
 
+    public Integer getCode() {
+        return code;
+    }
+
     public ServiceException setCode(Integer code) {
         this.code = code;
         return this;
@@ -50,7 +53,5 @@ public final class ServiceException extends RuntimeException {
         this.message = message;
         return this;
     }
-    public static ServiceException build(ErrorCode errorCode) {
-        return new ServiceException(errorCode);
-    }
+
 }

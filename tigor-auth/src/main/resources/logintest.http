@@ -1,0 +1,20 @@
+### GET request to example server
+
+POST http://localhost:8077/auth/login
+Content-Type: application/json
+{
+  "username": "admin",
+  "password": "admin123"
+}
+> {%
+  // 把返回的 token 存到环境变量，供后续请求使用
+  client.global.set("jwt", response.body.token);
+%}
+###
+
+### 2. 登出 —— 需要携带 JWT
+POST http://localhost:8077/auth/logout
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
+
+{}

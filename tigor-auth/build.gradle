@@ -1,17 +1,44 @@
 plugins {
-    id 'java'
+	id 'java'
+	id 'com.google.protobuf' version '0.9.4'
+	id 'io.freefair.lombok'  version '8.14'
 }
-description = 'Tigor Authentication Server'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
 dependencies {
-    implementation project(':tigor-frameworks')
-    implementation('org.springframework.boot:spring-boot-starter-security')
-    implementation('org.springframework.boot:spring-boot-starter-webflux')
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.5.3'
-    // https://mvnrepository.com/artifact/com.graphql-java-kickstart/graphql-kickstart-spring-webflux
-    implementation("com.graphql-java-kickstart:graphql-kickstart-spring-webflux:15.1.0")
-    // https://mvnrepository.com/artifact/com.graphql-java-kickstart/graphql-java-tools
-    implementation("com.graphql-java-kickstart:graphql-java-tools:14.0.1")
-    // https://mvnrepository.com/artifact/com.baomidou/mybatis-plus-boot-starter
-    implementation('com.baomidou:mybatis-plus-boot-starter:3.5.12')
-    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:3.5.2'
+	implementation project(':tigor-frameworks')
+	implementation("com.fhs-opensource:easy-trans-anno:3.0.6")
+	implementation('com.baomidou:mybatis-plus-annotation:3.5.12')
+
+	implementation 'org.springframework.boot:spring-boot-starter-webflux:3.5.3'
+	implementation 'org.springframework.boot:spring-boot-starter-security:3.5.3'
+//	implementation 'io.grpc:grpc-services'
+//	implementation 'org.springframework.grpc:spring-grpc-spring-boot-starter'
+	implementation 'com.baomidou:mybatis-plus-boot-starter:3.5.12'
+	implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc:3.5.3'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator:3.5.3'
+	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'io.projectreactor:reactor-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+
+	// 新增JWT依赖
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+	// 新增Redis依赖
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive:3.5.3'
+	runtimeOnly 'org.mariadb:r2dbc-mariadb:1.1.3'
+
 }

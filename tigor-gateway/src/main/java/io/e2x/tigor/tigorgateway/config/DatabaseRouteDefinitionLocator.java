@@ -15,10 +15,12 @@ import reactor.core.publisher.Flux;
 
 import java.net.URI;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Component
 public class DatabaseRouteDefinitionLocator implements RouteDefinitionLocator {
-
+    private final Logger logger = Logger.getLogger(DatabaseRouteDefinitionLocator.class.getName());
     private final RouteDefinitionRepository routeDefinitionRepository;
     private final ObjectMapper objectMapper;
 
@@ -29,10 +31,13 @@ public class DatabaseRouteDefinitionLocator implements RouteDefinitionLocator {
 
     @Override
     public Flux<RouteDefinition> getRouteDefinitions() {
+        logger.log(Level.INFO, "Loading routes from database...");
         List<RouteDefinitionEntity> entities = routeDefinitionRepository.findAll();
-        return Flux.fromIterable(entities.stream()
+        List<RouteDefinition> definitions = entities.stream()
                 .map(this::convertToRouteDefinition)
-                .toList());
+                .toList();
+        logger.log(Level.INFO, "Loaded " + definitions.size() + " routes from database.");
+        return Flux.fromIterable(definitions);
     }
 
     private RouteDefinition convertToRouteDefinition(RouteDefinitionEntity entity) {

@@ -5,6 +5,8 @@ description = 'Tigor Gateway Server'
 dependencies {
 	implementation project(':tigor-frameworks')
 	implementation "org.projectlombok:lombok:1.18.38"
+	implementation("com.fhs-opensource:easy-trans-anno:3.0.6")
+	implementation('com.baomidou:mybatis-plus-annotation:3.5.12')
 	implementation 'org.springframework.boot:spring-boot-starter-graphql:3.5.3'
 	implementation 'org.springframework.cloud:spring-cloud-starter-gateway-server-webflux:4.3.0'
 	implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer:4.3.0'

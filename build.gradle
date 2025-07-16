@@ -59,8 +59,8 @@ subprojects {
 //    }
     dependencies {
         // https://mvnrepository.com/artifact/com.fhs-opensource/easy-trans-anno
-        implementation("com.fhs-opensource:easy-trans-anno:3.0.6")
-        implementation('com.baomidou:mybatis-plus-annotation:3.5.12')
+//        implementation("com.fhs-opensource:easy-trans-anno:3.0.6")
+//        implementation('com.baomidou:mybatis-plus-annotation:3.5.12')
         implementation "org.projectlombok:lombok:1.18.38"
     }
     if (name != 'tigor-frameworks') {

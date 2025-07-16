@@ -1,87 +1,122 @@
 package io.e2x.tigor.auth.service.impl;
 
-import io.e2x.tigor.auth.dal.sql.UserInfoRepository;
+import com.alibaba.fastjson.JSON;
 import io.e2x.tigor.auth.dal.vo.UserInfo;
+import io.e2x.tigor.auth.repo.UserInfoRepository;
 import io.e2x.tigor.auth.service.IUserInfoService;
 import io.e2x.tigor.frameworks.common.exception.ServiceException;
-import io.e2x.tigor.frameworks.common.exception.enums.CommonStatus;
-import io.e2x.tigor.frameworks.common.pojo.CommonResult;
+import io.e2x.tigor.frameworks.common.exception.enums.GlobalErrorCodeConstants;
 import jakarta.annotation.Resource;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
-import java.util.Arrays;
+import java.math.BigInteger;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import static io.e2x.tigor.frameworks.common.exception.enums.GlobalErrorCodeConstants.BAD_REQUEST;
-import static io.e2x.tigor.frameworks.common.exception.enums.GlobalErrorCodeConstants.UNAUTHORIZED;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Component
 public class UserInfoService implements IUserInfoService {
-    @Resource
-    UserInfoRepository userInfoRepository;
+
+    private static final Logger logger = Logger.getLogger(UserInfoService.class.getName());
 
     @Resource
-    BCryptPasswordEncoder passwordEncoder;
+    private UserInfoRepository userInfoRepository;
+
+    @Resource
+    private PasswordEncoder passwordEncoder;
 
     @Override
-    public Mono<CommonResult<Boolean>> login(String username, String password) {
-        return userInfoRepository.findByUsername(username)
-                .flatMap(userInfo -> {
-                    if (passwordEncoder.matches(password, userInfo.getPassword())) {
-                        return Mono.just(CommonResult.success(true));
-                    }
-                    return Mono.just(CommonResult.success(false));
-                });
+    public Mono<Boolean> hasUserByName(String username) throws ServiceException {
+        return userInfoRepository.existsByUsername(username)
+                .switchIfEmpty(Mono.error(new ServiceException(GlobalErrorCodeConstants.USER_NOT_EXIST)));
     }
 
     @Override
-    public Mono<UserInfo> createUser(String username, String password, String email) {
-        return checkUserExists(username)
-                .flatMap(exists -> exists ? Mono.error(ServiceException.build(BAD_REQUEST)) :
-                        userInfoRepository.save(new UserInfo(username, passwordEncoder.encode( password), email, CommonStatus.ENABLED, false)));
+    public Mono<UserInfo> getUserById(BigInteger id) throws ServiceException {
+        return userInfoRepository.findById(id)
+                .switchIfEmpty(Mono.error(new ServiceException(GlobalErrorCodeConstants.USER_NOT_EXIST)));
     }
 
     @Override
-    public Mono<UserInfo> updateUser(UserInfo userInfo) {
-        return userInfoRepository.save(userInfo);
+    public Mono<UserInfo> getUserByUsernamePassword(String username, String password) throws ServiceException {
+        return userInfoRepository.findByUsername( username).flatMap(dto -> {
+            UserInfo userInfo = new UserInfo(dto);
+            if (passwordEncoder.matches(password, userInfo.getPassword())) {
+                return Mono.just(userInfo);
+            } else {
+                return Mono.error(new ServiceException(GlobalErrorCodeConstants.USER_PASSWORD_ERROR));
+            }
+        });
     }
 
     @Override
-    public Mono<Void> setUserAuthorities(String username, List<GrantedAuthority> authorities) {
-        return userInfoRepository.findByUsername(username)
-                .flatMap(userInfo -> {
-                    userInfo.setAuthorities(authorities);
-                    userInfoRepository.save(userInfo);
-                    return Mono.empty();
-                }).then();
+    public Mono<UserInfo> getUserByEmail(String email) throws ServiceException {
+        return userInfoRepository.findByEmail(email).map(UserInfo::new).flatMap(Mono::just)
+                .switchIfEmpty(Mono.error(new ServiceException(GlobalErrorCodeConstants.USER_NOT_EXIST)));
     }
 
     @Override
-    public Mono<Void> setUserAutthorities(String username, String... authorities) {
-        return setUserAuthorities(username, Arrays.stream(authorities)
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList()));
+    public Mono<Boolean> createUser(String username, String password, String email) throws ServiceException {
+        return userInfoRepository.existsByUsername(username).flatMap(exists -> {
+            if (exists) {
+                return Mono.error(new ServiceException(GlobalErrorCodeConstants.USER_EXIST));
+            } else {
+                UserInfo userInfo = new UserInfo();
+                userInfo.setUsername(username);
+                userInfo.setPassword(passwordEncoder.encode(password));
+                userInfo.setEmail(email);
+                return userInfoRepository.save(userInfo).then(Mono.just(true));
+            }
+        });
     }
 
     @Override
-    public Mono<Void> hasAuthority(String username, String authority) {
-        return userInfoRepository.findByUsername(username)
-                .flatMap(userInfo -> userInfo.getAuthorities().stream()
-                        .anyMatch(authority::equals) ? Mono.empty() : Mono.error(ServiceException.build(UNAUTHORIZED)));
+    public Mono<Void> updateUser(UserInfo userInfo) throws ServiceException {
+        return userInfoRepository.existsById(userInfo.getId()).flatMap(exists -> {
+            if (exists) {
+                return userInfoRepository.save(userInfo).then();
+            } else {
+                return Mono.error(new ServiceException(GlobalErrorCodeConstants.USER_NOT_EXIST));
+            }
+        });
     }
 
-    private Mono<Boolean> checkUserExists(String username) {
-        return userInfoRepository.existsByUsername(username);
+    @Override
+    public Mono<Void> deleteUser(BigInteger id) throws ServiceException {
+        return userInfoRepository.existsById(id).flatMap(exists -> {
+            if (exists) {
+                return userInfoRepository.deleteById(id).then();
+            } else {
+                return Mono.error(new ServiceException(GlobalErrorCodeConstants.USER_NOT_EXIST));
+            }
+        });
     }
+
+    @Override
+    public Mono<UserInfo> getUserByName(String name) {
+        return userInfoRepository.existsByUsername( name).flatMap(exists -> {
+            if (exists) {
+                return userInfoRepository.findByUsername(name).map(UserInfo::new);
+            } else {
+                return Mono.error(new ServiceException(GlobalErrorCodeConstants.USER_NOT_EXIST));
+            }
+        });
+    }
+
+    @Override
+    public Mono<List<UserInfo>> getAllUsers() {
+        return userInfoRepository.findAll().collectList();
+    }
+
     @Override
     public Mono<UserDetails> findByUsername(String username) {
-        return userInfoRepository.findByUsername(username)
-                .cast(UserDetails.class).switchIfEmpty(Mono.error(ServiceException.build(BAD_REQUEST)));
+        return getUserByName( username).flatMap(userInfo -> {
+            userInfo.getPassword();
+            return Mono.just(userInfo);
+        });
     }
 }

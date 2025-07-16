@@ -1,7 +1,6 @@
-package io.e2x.tigor.frameworks.common.pojo;
+package io.e2x.tigor.frameworks.dal.typehandlers;
 
-import org.apache.ibatis.type.BaseTypeHandler;
-import org.apache.ibatis.type.JdbcType;
+import org.apache.ibatis.type.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -13,6 +12,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@MappedJdbcTypes(JdbcType.VARCHAR)
+@MappedTypes({List.class})
 public class GrantedAuthorityTypeHandler extends BaseTypeHandler<List<GrantedAuthority>> {
 
     @Override
@@ -20,7 +21,7 @@ public class GrantedAuthorityTypeHandler extends BaseTypeHandler<List<GrantedAut
         ps.setString(i, parameter
                 .stream()
                 .map(GrantedAuthority::getAuthority)
-                        .collect(Collectors.joining( ",")));
+                .collect(Collectors.joining( ",")));
     }
 
     @Override

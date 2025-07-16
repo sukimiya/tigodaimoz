@@ -2,16 +2,6 @@ package io.e2x.tigor.frameworks.common.exception.enums;
 
 import io.e2x.tigor.frameworks.common.exception.ErrorCode;
 
-/**
- * 全局错误码枚举
- * 0-999 系统异常编码保留
- *
- * 一般情况下，使用 HTTP 响应状态码 https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Status
- * 虽然说，HTTP 响应状态码作为业务使用表达能力偏弱，但是使用在系统层面还是非常不错的
- * 比较特殊的是，因为之前一直使用 0 作为成功，就不使用 200 啦。
- *
- * @author 芋道源码
- */
 public interface GlobalErrorCodeConstants {
 
     ErrorCode SUCCESS = new ErrorCode(0, "成功");
@@ -38,4 +28,9 @@ public interface GlobalErrorCodeConstants {
 
     ErrorCode UNKNOWN = new ErrorCode(999, "未知错误");
 
+    ErrorCode USER_NOT_EXIST = new ErrorCode(1000, "用户不存在");
+    ErrorCode USER_NOT_LOGIN = new ErrorCode(1001, "用户未登录");
+    ErrorCode USER_PASSWORD_ERROR = new ErrorCode(1002, "用户密码错误");
+    ErrorCode USER_EXIST = new ErrorCode(1003, "用户已存在");
+    ErrorCode USER_LOGIN_FAILED = new ErrorCode(1004, "登录失败");
 }

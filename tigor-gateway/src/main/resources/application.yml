@@ -1,4 +1,8 @@
-
+management:
+  endpoints:
+    web:
+      exposure:
+        include: none
 spring:
   application:
     name: tigor-gateway
@@ -19,9 +23,20 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.MariaDBDialect
     show-sql: true
+  security:
+    enable-authentication: false
+#  security:
+#    user:
+#      name: admin
+#      password: 19547047
+#      roles: ACTUATOR, ADMIN
 server:
   port: 8008
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8087/eureka/
+
+logging:
+  level:
+    org.springframework.boot.actuate.autoconfigure: DEBUG

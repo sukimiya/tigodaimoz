@@ -1,9 +1,14 @@
 plugins {
     id 'java'
-//    id 'org.springframework.boot' version '3.5.3'
-//    id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
 }
 description = "Tigor Eureka Service"
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(24)
+    }
+}
 repositories {
     mavenCentral()
 }
@@ -17,5 +22,7 @@ dependencies {
     // 使用已修复版本替代
     implementation 'com.thoughtworks.xstream:xstream:1.4.21' // 替换为无漏洞版本
     implementation 'com.amazon.ion:ion-java:1.11.10'     // 替换为修复后的版本
+
+    implementation 'org.glassfish.jersey.core:jersey-server:3.1.10'
 
 }

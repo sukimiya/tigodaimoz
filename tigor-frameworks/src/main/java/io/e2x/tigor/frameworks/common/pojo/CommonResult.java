@@ -1,6 +1,7 @@
 package io.e2x.tigor.frameworks.common.pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.e2x.tigor.frameworks.common.exception.ErrorCode;
 import io.e2x.tigor.frameworks.common.exception.ServiceException;
 import io.e2x.tigor.frameworks.common.exception.enums.GlobalErrorCodeConstants;
 import lombok.Data;
@@ -9,16 +10,8 @@ import org.springframework.util.Assert;
 import java.io.Serializable;
 import java.util.Objects;
 
-import io.e2x.tigor.frameworks.common.exception.ErrorCode;
-
-/**
- * 通用返回
- *
- * @param <T> 数据泛型
- */
 @Data
 public class CommonResult<T> implements Serializable {
-
     /**
      * 错误码
      *
@@ -93,7 +86,8 @@ public class CommonResult<T> implements Serializable {
             return;
         }
         // 业务异常
-        throw new ServiceException(code, msg);
+//        throw new ServiceException(code, msg);
+        return;
     }
 
     /**
@@ -109,5 +103,4 @@ public class CommonResult<T> implements Serializable {
     public static <T> CommonResult<T> error(ServiceException serviceException) {
         return error(serviceException.getCode(), serviceException.getMessage());
     }
-
 }

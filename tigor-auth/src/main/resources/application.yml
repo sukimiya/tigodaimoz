@@ -1,2 +1,50 @@
+tigor:
+  info:
+    base-package: io.e2x.tigor
+
+spring:
+  application:
+    name: tigor-auth
+  datasource:
+    url: jdbc:mariadb://mariadb:3306/tigor?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true&rewriteBatchedStatements=true
+    username: tigor
+    password: NmDwA_`q
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    show-sql: true
+  r2dbc:
+    url: r2dbc:pool:mariadb://mariadb:3306/tigor
+    username: tigor
+    password: NmDwA_`q
+  data:
+    redis:
+      host: redis
+      port: 6379
+      database: 1
+
+  main:
+    allow-bean-definition-overriding: true
+jwt:
+  secret: SGVsbG8gV29ybGQhSGVsbG8gV29ybGQhSGVsbG8gV29ybGQh  # 新生成的HS256密钥（Base64编码）
+  expiration: 86400000 # 1天过期时间
+
+grpc:
+  server:
+    port: 9090
+    interceptors:
+      - io.grpc.spring.autoconfigure.OpenTelemetryServerInterceptorAutoConfiguration$OpenTelemetryServerInterceptor
+    log-level: INFO
 server:
   port: 8077
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8087/eureka/
+    enabled: true
+  instance:
+    prefer-ip-address: true
+    appname: auth-service
+mybatis-plus:
+  type-handlers-package: ${tigor.info.base-package}.*.dal.typehandlers
