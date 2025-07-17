@@ -4,6 +4,7 @@ import io.e2x.tigor.auth.config.JwtTool;
 import io.micrometer.common.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.DisabledException;
@@ -56,10 +57,11 @@ public class JwtSecurityContextRepository implements ServerSecurityContextReposi
 //                    )
 //            );
         }
-        String token = exchange.getRequest().getHeaders().getFirst("token");
+        String token = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         if (StringUtils.isBlank(token)) {
             throw new DisabledException("登录失效！");
         }
+        token = token.substring("Bearer ".length(), token.length());
         boolean isold = jwtTool.VerityToken(token);
         if (!isold) {
             throw new AccessDeniedException("登录失效！");

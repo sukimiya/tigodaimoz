@@ -33,4 +33,5 @@ public interface GlobalErrorCodeConstants {
     ErrorCode USER_PASSWORD_ERROR = new ErrorCode(1002, "用户密码错误");
     ErrorCode USER_EXIST = new ErrorCode(1003, "用户已存在");
     ErrorCode USER_LOGIN_FAILED = new ErrorCode(1004, "登录失败");
+    ErrorCode USER_LOGIN_EXPIRED = new ErrorCode(1005, "登录失效");
 }

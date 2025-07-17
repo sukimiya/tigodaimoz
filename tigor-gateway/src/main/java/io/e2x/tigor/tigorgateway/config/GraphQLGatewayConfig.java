@@ -123,7 +123,7 @@ public class GraphQLGatewayConfig {
                         .filters(f -> f.stripPrefix(1))
                         .uri("lb://user-service/api/users/register"))
                 .route("auth_logout_route_v1", r -> r.path("/logout")
-                        .and().query(HttpHeaders.AUTHORIZATION, "^[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_=]+\\.?[A-Za-z0-9-_.+/=]*$")
+                        .and().query(HttpHeaders.AUTHORIZATION, "^[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_=]+\\.?[A-Za-z0-9-_.+/ =]*$")
                         .filters(f -> f.stripPrefix(1))
                         .uri("lb://auth-service/auth/logout"))
                 .build();

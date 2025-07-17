@@ -1,6 +1,7 @@
 package io.e2x.tigor.auth.config.utils;
 
-import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.e2x.tigor.auth.config.JwtTool;
 import io.e2x.tigor.auth.dal.vo.UserInfo;
 import io.e2x.tigor.auth.entity.AuthResp;
@@ -49,7 +50,13 @@ public class LoginSuccessHandler implements ServerAuthenticationSuccessHandler {
 
         // 构造 CommonResult 响应对象
         CommonResult<AuthResp> result = CommonResult.success(authResp);
-        String json = JSON.toJSONString(result);
+        String json = null;
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            json = objectMapper.writeValueAsString(result);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
         logger.debug("登录成功！token: " + authResp.getToken());
         // 将 JSON 字符串写入响应体
         return response.writeAndFlushWith(

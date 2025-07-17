@@ -1,13 +1,11 @@
 package io.e2x.tigor.auth.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import io.e2x.tigor.auth.dal.vo.UserInfo;
 import io.e2x.tigor.auth.repo.UserInfoRepository;
 import io.e2x.tigor.auth.service.IUserInfoService;
 import io.e2x.tigor.frameworks.common.exception.ServiceException;
 import io.e2x.tigor.frameworks.common.exception.enums.GlobalErrorCodeConstants;
 import jakarta.annotation.Resource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;

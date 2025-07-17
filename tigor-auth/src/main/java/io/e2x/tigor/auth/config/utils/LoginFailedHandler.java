@@ -1,7 +1,7 @@
 package io.e2x.tigor.auth.config.utils;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.e2x.tigor.frameworks.common.exception.enums.GlobalErrorCodeConstants;
 import io.e2x.tigor.frameworks.common.pojo.CommonResult;
 import org.springframework.http.MediaType;
@@ -25,7 +25,13 @@ public class LoginFailedHandler implements ServerAuthenticationFailureHandler {
         response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
         // 构造 CommonResult 响应对象
         CommonResult<String> result = CommonResult.error(GlobalErrorCodeConstants.USER_LOGIN_FAILED);
-        String json = JSON.toJSONString(result);
+        String json = null;
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            json = objectMapper.writeValueAsString(result);
+        } catch (JsonProcessingException exception) {
+            throw new RuntimeException(e);
+        }
 
         // 将 JSON 字符串写入响应体
         return response.writeAndFlushWith(
