@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.e2x.tigor.tigorgateway.dal.dataobject.RouteDefinitionEntity;
 import io.e2x.tigor.tigorgateway.dal.mysql.RouteDefinitionRepository;
+import io.e2x.tigor.tigorgateway.service.RouteCacheService;
 import org.springframework.cloud.gateway.filter.FilterDefinition;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinition;
@@ -23,26 +24,50 @@ public class DatabaseRouteDefinitionLocator implements RouteDefinitionLocator {
     private final Logger logger = Logger.getLogger(DatabaseRouteDefinitionLocator.class.getName());
     private final RouteDefinitionRepository routeDefinitionRepository;
     private final ObjectMapper objectMapper;
+    private final RouteCacheService routeCacheService;
 
-    public DatabaseRouteDefinitionLocator(ObjectMapper objectMapper, RouteDefinitionRepository routeDefinitionRepository) {
+    public DatabaseRouteDefinitionLocator(ObjectMapper objectMapper, RouteDefinitionRepository routeDefinitionRepository, RouteCacheService routeCacheService) {
         this.routeDefinitionRepository = routeDefinitionRepository;
         this.objectMapper = objectMapper;
+        this.routeCacheService = routeCacheService;
     }
 
     @Override
     public Flux<RouteDefinition> getRouteDefinitions() {
-        logger.log(Level.INFO, "Loading routes from database...");
-        List<RouteDefinitionEntity> entities = routeDefinitionRepository.findAll();
-        List<RouteDefinition> definitions = entities.stream()
-                .map(this::convertToRouteDefinition)
-                .toList();
-        logger.log(Level.INFO, "Loaded " + definitions.size() + " routes from database.");
-        return Flux.fromIterable(definitions);
+        logger.log(Level.INFO, "Loading routes...");
+        // 首先尝试从Redis缓存读取
+        return routeCacheService.getRoutesFromCache()
+                .flatMapMany(routes -> {
+                    if (!routes.isEmpty()) {
+                        logger.log(Level.INFO, "Routes loaded from Redis cache");
+                        return Flux.fromIterable(routes);
+                    } else {
+                        // 从数据库读取并缓存
+                        logger.log(Level.INFO, "Loading routes from database...");
+                        return routeDefinitionRepository.findAll()
+                                .map(this::convertToRouteDefinition)
+                                .collectList()
+                                .flatMapMany(routesList -> {
+                                    // 缓存到Redis
+                                    routeCacheService.cacheRoutes(routesList)
+                                            .subscribe();
+                                    logger.log(Level.INFO, "Loaded routes from database and cached to Redis");
+                                    return Flux.fromIterable(routesList);
+                                });
+                    }
+                })
+                .onErrorResume(e -> {
+                    // 缓存读取失败时从数据库读取
+                    logger.log(Level.SEVERE, "Error loading routes from cache, falling back to database", e);
+                    return routeDefinitionRepository.findAll()
+                            .map(this::convertToRouteDefinition)
+                            .doOnComplete(() -> logger.log(Level.INFO, "Loaded routes from database"));
+                });
     }
 
-    private RouteDefinition convertToRouteDefinition(RouteDefinitionEntity entity) {
+    public RouteDefinition convertToRouteDefinition(RouteDefinitionEntity entity) {
         RouteDefinition definition = new RouteDefinition();
-        definition.setId(entity.getId());
+        definition.setId(entity.getId().toString());
         definition.setUri(URI.create(entity.getUri()));
         definition.setPredicates(parseJson(entity.getPredicates(), PredicateDefinition.class));
         definition.setFilters(parseJson(entity.getFilters(), FilterDefinition.class));

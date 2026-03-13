@@ -27,7 +27,7 @@ dependencies {
     implementation "org.projectlombok:lombok:1.18.38"
     implementation 'io.freefair.lombok:io.freefair.lombok.gradle.plugin:8.14'
     // spring cloud
-    implementation 'org.springframework.boot:spring-boot-starter:3.5.3'
+    implementation 'org.springframework.boot:spring-boot-starter:4.0.3'
     implementation('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.3.0') {
         exclude group: 'com.graphql-java', module: 'graphql-java'
         // 可选：进一步排除其他潜在冲突模块
@@ -35,7 +35,7 @@ dependencies {
         exclude group: 'org.apache.httpcomponents', module: 'httpclient'
         exclude group: 'commons-codec', module: 'commons-codec'
     }
-    implementation 'org.springframework.boot:spring-boot-starter-webflux:3.5.3'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux:4.0.3'
     implementation 'org.springframework.security:spring-security-core:6.5.1'
 
     // gateway supports

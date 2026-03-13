@@ -1,6 +1,7 @@
 package io.e2x.tigor.auth.config;
 
 import io.e2x.tigor.auth.config.utils.*;
+import io.e2x.tigor.auth.data.CustomTenantIdentifierResolver;
 import io.e2x.tigor.auth.repo.JwtSecurityContextRepository;
 import io.e2x.tigor.auth.service.IUserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,9 @@ public class SecurityConfig {
     @Autowired
     JwtWebFilter jwtWebFilter;
 
+    @Autowired
+    CustomTenantIdentifierResolver customTenantIdentifierResolver;
+
     //security的鉴权排除列表
     public static final String[] excludedAuthPages = {
             "/auth/login",
@@ -68,9 +72,9 @@ public class SecurityConfig {
         return http.authorizeExchange( exchange ->
                 exchange.pathMatchers(excludedAuthPages).permitAll()
                         .pathMatchers(HttpMethod.OPTIONS).permitAll()
-                        .pathMatchers("/**").access(authManagerHandler)
-                        .anyExchange().authenticated()
-            ).addFilterAfter(jwtWebFilter, SecurityWebFiltersOrder.FIRST)
+                        .anyExchange().access(authManagerHandler)
+            ).addFilterBefore(customTenantIdentifierResolver, SecurityWebFiltersOrder.FIRST)
+            .addFilterAfter(jwtWebFilter, SecurityWebFiltersOrder.FIRST)
                 .securityContextRepository(jwtSecurityContextRepository)
                 .formLogin(formLoginSpec -> formLoginSpec.loginPage("/auth/login")
                         .authenticationSuccessHandler(loginSuccessHandler)

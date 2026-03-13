@@ -63,6 +63,7 @@ public class JwtWebFilter implements WebFilter {
             throw new ServiceException(GlobalErrorCodeConstants.INTERNAL_SERVER_ERROR);
         }
     }
+    @SuppressWarnings("unused")
     private byte[] forbiddenResponse() {
         try {
             return new ObjectMapper().writeValueAsString(CommonResult.error(GlobalErrorCodeConstants.FORBIDDEN)).getBytes();

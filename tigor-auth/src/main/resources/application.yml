@@ -5,18 +5,11 @@ tigor:
 spring:
   application:
     name: tigor-auth
-  datasource:
-    url: jdbc:mariadb://mariadb:3306/tigor?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true&rewriteBatchedStatements=true
-    username: tigor
-    password: NmDwA_`q
-    driver-class-name: org.mariadb.jdbc.Driver
-  jpa:
-    database-platform: org.hibernate.dialect.MariaDBDialect
-    show-sql: true
+
   r2dbc:
-    url: r2dbc:pool:mariadb://mariadb:3306/tigor
+    url: r2dbc:pool:postgresql://localhost:5432/tigor
     username: tigor
-    password: NmDwA_`q
+    password: tigor
   data:
     redis:
       host: redis

@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 public class ListGrantedAuthorityReadingConverter implements Converter<String, List<GrantedAuthority>> {
     @Override
     public List<GrantedAuthority> convert(@NonNull String s) {
+
         return Arrays.stream(s.split( ",")).map(SimpleGrantedAuthority::new).collect(Collectors.toList());
     }
 

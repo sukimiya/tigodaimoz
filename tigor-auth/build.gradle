@@ -19,16 +19,17 @@ dependencies {
 	implementation("com.fhs-opensource:easy-trans-anno:3.0.6")
 	implementation('com.baomidou:mybatis-plus-annotation:3.5.12')
 
-	implementation 'org.springframework.boot:spring-boot-starter-webflux:3.5.3'
-	implementation 'org.springframework.boot:spring-boot-starter-security:3.5.3'
-//	implementation 'io.grpc:grpc-services'
-//	implementation 'org.springframework.grpc:spring-grpc-spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux:4.0.3'
+	implementation 'org.springframework.boot:spring-boot-starter-security:4.0.3'
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.0'
+	implementation 'org.aspectj:aspectjweaver:1.9.22'
+	//	implementation 'io.grpc:grpc-services'
+	//	implementation 'org.springframework.grpc:spring-grpc-spring-boot-starter'
 	implementation 'com.baomidou:mybatis-plus-boot-starter:3.5.12'
-	implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc:3.5.3'
-	implementation 'org.springframework.boot:spring-boot-starter-actuator:3.5.3'
-	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+	implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc:4.0.3'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator:4.0.3'
 
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test:4.0.3'
 	testImplementation 'io.projectreactor:reactor-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 
@@ -38,7 +39,7 @@ dependencies {
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
 	// 新增Redis依赖
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive:3.5.3'
-	runtimeOnly 'org.mariadb:r2dbc-mariadb:1.1.3'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive:4.0.3'
+	implementation 'org.postgresql:r2dbc-postgresql'
 
 }

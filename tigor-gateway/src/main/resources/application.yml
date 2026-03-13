@@ -15,14 +15,15 @@ spring:
 #              uri: http://dgs-service
 #              predicates:
 #                - Path=/graphql/**
-  datasource:
-    url: jdbc:mariadb://mariadb:3306/tigor?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true&rewriteBatchedStatements=true
+  r2dbc:
+    url: r2dbc:pool:postgresql://localhost:5432/tigor
     username: tigor
-    password: NmDwA_`q
-    driver-class-name: org.mariadb.jdbc.Driver
-  jpa:
-    database-platform: org.hibernate.dialect.MariaDBDialect
-    show-sql: true
+    password: tigor
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
   security:
     enable-authentication: false
 #  security:

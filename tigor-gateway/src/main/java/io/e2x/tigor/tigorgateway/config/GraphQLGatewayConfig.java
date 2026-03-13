@@ -59,7 +59,7 @@ public class GraphQLGatewayConfig {
                     .orElse(module) + (version != null ? version : "");
             if (moduleId.isEmpty() && Arrays.stream(AUTH_MODULE_IDS).noneMatch(module::equals)) {
                 // 如果没有token，返回401
-                if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
+                if (request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION) == null) {
                     ServerHttpResponse response = exchange.getResponse();
                     response.setStatusCode(HttpStatusCode.valueOf(401));
                     return response.setComplete();

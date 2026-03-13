@@ -2,8 +2,7 @@ package io.e2x.tigor.auth.config.utils;
 
 import io.e2x.tigor.auth.dal.vo.UserInfo;
 import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authorization.AuthorizationDecision;
+import org.springframework.security.authorization.AuthorizationResult;
 import org.springframework.security.authorization.ReactiveAuthorizationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -21,41 +19,38 @@ public class AuthManagerHandler implements ReactiveAuthorizationManager<Authoriz
 
     private static final Logger logger = Logger.getLogger(AuthManagerHandler.class.getName());
 
+    private static AuthorizationResult createAuthorizationResult(boolean granted) {
+        return new AuthorizationResult() {
+            @Override
+            public boolean isGranted() {
+                return granted;
+            }
+        };
+    }
+
     @Override
-    public Mono<AuthorizationDecision> check(Mono<Authentication> authentication, AuthorizationContext object) {
-        ServerHttpRequest request = object.getExchange().getRequest();
-        // TODO: URL 匹配
+    public Mono<AuthorizationResult> authorize(Mono<Authentication> authentication, AuthorizationContext context) {
+        ServerHttpRequest request = context.getExchange().getRequest();
+        String requestUrl = request.getPath().pathWithinApplication().value();
         // String requestUrl = request.getPath().pathWithinApplication().value();
         return authentication
                 .filter(Authentication::isAuthenticated)
-                .flatMapIterable(Authentication::getAuthorities)
-                .map(GrantedAuthority::getAuthority)
-                .filter(c -> hasRole(authentication, c))
-                .then(Mono.just(new AuthorizationDecision(true)))
-                .defaultIfEmpty(new AuthorizationDecision(false));
-    }
-    private Boolean hasRole(Mono<Authentication> authentication, String role) {
-        return getRoles(authentication).contains(role);
-    }
-    private List<String> getRoles(Mono<Authentication> authentication) {
-        return authentication
-                .flatMap(a -> {
-                    logger.log(Level.INFO, "getRoles: " + a.getPrincipal());
-                    if(a.getPrincipal() instanceof UserInfo)
-                        return Mono.just((UserInfo)a);
-                    return null;
+                .map(auth -> {
+                    List<String> roles = getRoles(auth);
+                    // 这里可以添加具体的权限检查逻辑
+                    boolean granted = !roles.isEmpty();
+                    return createAuthorizationResult(granted);
                 })
-                .flatMap(userInfo -> {
-                    List<String> roles = userInfo.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
-                    return Mono.just(roles);
-                }).block();
+                .defaultIfEmpty(createAuthorizationResult(false));
     }
-    @Override
-    public Mono<Void> verify(Mono<Authentication> authentication, AuthorizationContext object) {
-        return check(authentication, object)
-                .filter(AuthorizationDecision::isGranted)
-                .switchIfEmpty(Mono.defer(() -> Mono.error(new AccessDeniedException("Access Denied"))))
-                .flatMap((decision) -> Mono.empty());
+
+    private List<String> getRoles(Authentication authentication) {
+        if (authentication.getPrincipal() instanceof UserInfo) {
+            UserInfo userInfo = (UserInfo) authentication.getPrincipal();
+            return userInfo.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toList());
+        }
+        return List.of();
     }
 }
-
